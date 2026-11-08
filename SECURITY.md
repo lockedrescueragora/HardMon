@@ -67,20 +67,6 @@ We follow responsible disclosure. Please give us a reasonable window before maki
 
 Because the download archive is **password-protected and redistributed as a raw binary**, integrity verification is important.
 
-**SHA-256 of `HardMon.exe` (v1.0.0):**
-
-```
-<!-- Replace with actual hash before publishing -->
-0000000000000000000000000000000000000000000000000000000000000000
-```
-
-**SHA-256 of `HardMon_1.0.0_Windows_x64.zip`:**
-
-```
-<!-- Replace with actual hash before publishing -->
-0000000000000000000000000000000000000000000000000000000000000000
-```
-
 Verify on Windows:
 
 ```powershell
