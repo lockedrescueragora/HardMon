@@ -1,0 +1,132 @@
+# ─── Windows ───────────────────────────────────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+*.url
+
+# ─── Executables / Build artifacts ─────────────────────────
+*.exe
+*.dll
+*.pdb
+*.ilk
+*.obj
+*.o
+*.lib
+*.exp
+*.map
+*.manifest
+*.res
+*.cache
+*.tlog
+*.ipch
+*.sdf
+*.opensdf
+*.aps
+*.user
+*.ncb
+*.suo
+*.userosscache
+*.sln.docstates
+*.VC.db
+*.VC.VC.opendb
+*.pch
+
+# ─── Visual Studio / MSBuild ───────────────────────────────
+.vs/
+.vscode/
+.idea/
+bin/
+obj/
+Debug/
+Release/
+x64/
+x86/
+ARM/
+ARM64/
+Build/
+Out/
+ipch/
+packages/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ─── CMake / Make ──────────────────────────────────────────
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.make
+
+# ─── Runtime / logs / temp ─────────────────────────────────
+*.log
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
+*.swp
+*.swo
+*~
+logs/
+tmp/
+temp/
+cache/
+Temp/
+
+# ─── HardMon local state ───────────────────────────────────
+HardMon.settings
+HardMon.config
+HardMon.log
+*.hmlog
+crashdumps/
+*.dmp
+
+# ─── OS / editor junk ──────────────────────────────────────
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+*.sublime-workspace
+*.sublime-project
+
+# ─── Node (Pages tooling, optional) ────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.next/
+dist/
+build/
+coverage/
+
+# ─── Python (helper scripts, optional) ─────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+env/
+.env
+.env.*
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ─── Environment & secrets ─────────────────────────────────
+*.secret
+*.secrets
+secrets/
+.env
+.env.local
+.env.*.local
+
+# ─── Packaging noise (do NOT ignore the download archive) ──
+# NOTE: downloads/*.zip is intentionally tracked — it is the public download.
+# !downloads/HardMon_1.0.0_Windows_x64.zip   <-- keep tracked
